@@ -1,0 +1,7 @@
+datasets/test_data
+datasets/train_data
+datasets/train_data_ul
+datasets/valid_data
+datasets/best_model.pth
+datasets/Data.rar
+predictions/

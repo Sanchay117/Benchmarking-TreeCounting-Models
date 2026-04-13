@@ -1,0 +1,30 @@
+2026-04-12 14:27:14,907 - INFO - data_dir       :	/home/ashank/TreeCounting_Benchmark/TreeFormer/datasets
+2026-04-12 14:27:14,907 - INFO - data_dir_shot  :	/home/ashank/TreeCounting_Benchmark/TreeFormer/datasets
+2026-04-12 14:27:14,907 - INFO - save_root      :	/home/ashank/TreeCounting_Benchmark/AdaTreeFormer/ckpts
+2026-04-12 14:27:14,907 - INFO - train_split    :	train_data
+2026-04-12 14:27:14,907 - INFO - val_split      :	valid_data
+2026-04-12 14:27:14,907 - INFO - shot_train_split:	train_data
+2026-04-12 14:27:14,907 - INFO - shot_val_split :	valid_data
+2026-04-12 14:27:14,907 - INFO - dataset        :	TC
+2026-04-12 14:27:14,907 - INFO - lr             :	1e-05
+2026-04-12 14:27:14,907 - INFO - weight_decay   :	0.0001
+2026-04-12 14:27:14,907 - INFO - ema_decay      :	0.99
+2026-04-12 14:27:14,907 - INFO - resume         :	
+2026-04-12 14:27:14,907 - INFO - max_epoch      :	4000
+2026-04-12 14:27:14,907 - INFO - val_epoch      :	1
+2026-04-12 14:27:14,907 - INFO - val_start      :	0
+2026-04-12 14:27:14,907 - INFO - batch_size     :	5
+2026-04-12 14:27:14,907 - INFO - batch_size_shot:	5
+2026-04-12 14:27:14,907 - INFO - device         :	0
+2026-04-12 14:27:14,907 - INFO - num_workers    :	0
+2026-04-12 14:27:14,907 - INFO - ot             :	0.1
+2026-04-12 14:27:14,907 - INFO - tv             :	0.01
+2026-04-12 14:27:14,907 - INFO - crop_size      :	256
+2026-04-12 14:27:14,907 - INFO - reg            :	1
+2026-04-12 14:27:14,907 - INFO - num_of_iter_in_ot:	100
+2026-04-12 14:27:14,907 - INFO - norm_cood      :	0
+2026-04-12 14:27:14,907 - INFO - run_name       :	New
+2026-04-12 14:27:14,908 - INFO - consistency    :	1
+2026-04-12 14:27:14,908 - INFO - consistency_ramp:	200
+2026-04-12 14:27:14,908 - INFO - scale_factor   :	4
+2026-04-12 14:27:14,961 - INFO - using 1 gpus

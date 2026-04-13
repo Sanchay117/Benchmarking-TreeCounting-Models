@@ -1,0 +1,16 @@
+{
+  "batch_size": 16,
+  "crop_size": 256,
+  "data_dir": "datasets",
+  "device": "0",
+  "epochs": 3000,
+  "lr": 1e-05,
+  "num_workers": 4,
+  "pretrained": "",
+  "save_dir": "ckpts/mcnn_kcl",
+  "seed": 64678,
+  "train_split": "train_data",
+  "val_every": 1,
+  "val_split": "valid_data",
+  "weight_decay": 0.0001
+}
