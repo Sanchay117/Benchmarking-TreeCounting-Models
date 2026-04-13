@@ -1,0 +1,8 @@
+{
+  "model_path": "/home/ashank/TreeCounting_Benchmark/TreeFormer/ckpts/mcnn_kcl/20260413-141540/best_mae.pth",
+  "split": "test_data",
+  "num_images": 161,
+  "mae": 45.36996841430664,
+  "mse": 58.78605270385742,
+  "r2": -0.6110656334618534
+}

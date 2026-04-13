@@ -1,0 +1,9 @@
+{
+  "batch_size": 1,
+  "data_dir": "datasets",
+  "device": "0",
+  "model_path": "/home/ashank/TreeCounting_Benchmark/TreeFormer/ckpts/mcnn_kcl/20260413-145725/best_mae.pth",
+  "output_dir": "eval",
+  "pred_dir": "predictions_mcnn",
+  "split": "test_data"
+}
