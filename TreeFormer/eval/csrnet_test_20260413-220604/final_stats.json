@@ -1,0 +1,8 @@
+{
+  "model_path": "./CSRNet_models/PartAmodel_best.pth.tar",
+  "split": "test_data",
+  "num_images": 161,
+  "mae": 207.8215789794922,
+  "mse": 248.850830078125,
+  "r2": -27.869738815266935
+}

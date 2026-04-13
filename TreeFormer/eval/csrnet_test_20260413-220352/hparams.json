@@ -1,0 +1,9 @@
+{
+  "batch_size": 1,
+  "data_dir": "datasets",
+  "device": "0",
+  "model_path": "./ckpts/csrnet_kcl/20260413-172535/best_mae.pth",
+  "output_dir": "eval",
+  "pred_dir": "predictions_csrnet",
+  "split": "test_data"
+}

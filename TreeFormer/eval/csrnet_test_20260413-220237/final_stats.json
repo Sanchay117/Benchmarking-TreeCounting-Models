@@ -1,0 +1,8 @@
+{
+  "model_path": "./ckpts/csrnet_kcl/20260413-172423/best_mae.pth",
+  "split": "test_data",
+  "num_images": 161,
+  "mae": 20.64295768737793,
+  "mse": 26.850444793701172,
+  "r2": 0.6639007067714626
+}

@@ -1,0 +1,9 @@
+{
+  "batch_size": 1,
+  "data_dir": "datasets",
+  "device": "0",
+  "model_path": "./CSRNet_models/partBmodel_best.pth.tar",
+  "output_dir": "eval",
+  "pred_dir": "predictions_csrnet",
+  "split": "test_data"
+}

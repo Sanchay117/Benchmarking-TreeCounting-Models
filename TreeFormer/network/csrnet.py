@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from torchvision import models
+from torchvision.models import VGG16_Weights, vgg16
 
 
 def _make_layers(cfg, in_channels=3, dilation=False):
@@ -31,7 +31,7 @@ class CSRNet(nn.Module):
             self._load_frontend_vgg16()
 
     def _load_frontend_vgg16(self):
-        vgg = models.vgg16(pretrained=True)
+        vgg = vgg16(weights=VGG16_Weights.IMAGENET1K_V1)
         frontend_state = self.frontend.state_dict()
         vgg_items = list(vgg.features.state_dict().items())
 

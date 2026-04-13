@@ -92,7 +92,7 @@ def parse_args():
     parser.add_argument("--train-split", type=str, default="train_data", help="Training split folder")
     parser.add_argument("--val-split", type=str, default="valid_data", help="Validation split folder")
     parser.add_argument("--epochs", type=int, default=300, help="Number of epochs")
-    parser.add_argument("--batch-size", type=int, default=8, help="Training batch size")
+    parser.add_argument("--batch-size", type=int, default=16, help="Training batch size")
     parser.add_argument("--num-workers", type=int, default=4, help="Data loader workers")
     parser.add_argument("--crop-size", type=int, default=256, help="Training crop size")
     parser.add_argument("--lr", type=float, default=1e-5, help="Learning rate")
@@ -131,6 +131,7 @@ def resolve_device(device_arg: str) -> torch.device:
         )
         return torch.device("cpu")
 
+    print(f"Using CUDA device 0 (visible device {device_arg})")
     return torch.device("cuda")
 
 
@@ -185,12 +186,22 @@ def load_checkpoint(path: str, model: nn.Module, optimizer=None):
             "Convert it to .pth first or start without --pretrained."
         )
 
-    ckpt = torch.load(path, map_location="cpu")
+    try:
+        ckpt = torch.load(path, map_location="cpu", weights_only=False)
+    except TypeError:
+        ckpt = torch.load(path, map_location="cpu")
+
+    if isinstance(ckpt, dict) and "state_dict" in ckpt:
+        model.load_state_dict(ckpt["state_dict"], strict=True)
+        if optimizer is not None and "optimizer" in ckpt:
+            print("Ignoring optimizer state from checkpoint. Fine-tuning with a fresh optimizer.")
+        return 0
+
     if isinstance(ckpt, dict) and "model_state_dict" in ckpt:
         model.load_state_dict(ckpt["model_state_dict"], strict=True)
         if optimizer is not None and "optimizer_state_dict" in ckpt:
-            optimizer.load_state_dict(ckpt["optimizer_state_dict"])
-        return int(ckpt.get("epoch", -1)) + 1
+            print("Ignoring optimizer state from checkpoint. Fine-tuning with a fresh optimizer.")
+        return 0
 
     if isinstance(ckpt, dict):
         model.load_state_dict(ckpt, strict=True)

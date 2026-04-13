@@ -1,0 +1,17 @@
+{
+  "batch_size": 16,
+  "crop_size": 256,
+  "data_dir": "datasets",
+  "device": "0",
+  "epochs": 500,
+  "lr": 1e-05,
+  "no_vgg_pretrain": false,
+  "num_workers": 4,
+  "pretrained": "./CSRNet_models/partBmodel_best.pth.tar",
+  "save_dir": "ckpts/csrnet_kcl",
+  "seed": 64678,
+  "train_split": "train_data",
+  "val_every": 1,
+  "val_split": "valid_data",
+  "weight_decay": 1e-05
+}

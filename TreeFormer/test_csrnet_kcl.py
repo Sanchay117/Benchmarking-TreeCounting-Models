@@ -98,7 +98,15 @@ def load_checkpoint(model: torch.nn.Module, model_path: str, device: torch.devic
             "Use a .pth checkpoint from train_csrnet_kcl.py."
         )
 
-    checkpoint = torch.load(model_path, map_location=device)
+    try:
+        checkpoint = torch.load(model_path, map_location=device, weights_only=False)
+    except TypeError:
+        checkpoint = torch.load(model_path, map_location=device)
+
+    if isinstance(checkpoint, dict) and "state_dict" in checkpoint:
+        model.load_state_dict(checkpoint["state_dict"], strict=True)
+        return int(checkpoint.get("epoch", -1))
+
     if isinstance(checkpoint, dict) and "model_state_dict" in checkpoint:
         model.load_state_dict(checkpoint["model_state_dict"], strict=True)
         return int(checkpoint.get("epoch", -1))
