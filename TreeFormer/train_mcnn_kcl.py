@@ -51,18 +51,20 @@ def save_plots(save_dir: str, history: list):
         return
 
     epochs = [row["epoch"] for row in history]
-    train_mse = [row["train_mse"] for row in history]
+    eps = 1e-8
+    train_mse = [max(float(row["train_mse"]), eps) for row in history]
 
     val_points = [row for row in history if row["val_mae"] is not None and row["val_mse"] is not None]
     val_epochs = [row["epoch"] for row in val_points]
-    val_mae = [row["val_mae"] for row in val_points]
-    val_mse = [row["val_mse"] for row in val_points]
+    val_mae = [max(float(row["val_mae"]), eps) for row in val_points]
+    val_mse = [max(float(row["val_mse"]), eps) for row in val_points]
 
     plt.figure(figsize=(8, 5))
     plt.plot(epochs, train_mse, label="Train MSE", linewidth=2)
     plt.xlabel("Epoch")
-    plt.ylabel("MSE")
-    plt.title("MCNN Training MSE")
+    plt.ylabel("MSE (log scale)")
+    plt.yscale("log")
+    plt.title("MCNN Training MSE (Log Scale)")
     plt.grid(True, alpha=0.3)
     plt.legend()
     plt.tight_layout()
@@ -74,8 +76,9 @@ def save_plots(save_dir: str, history: list):
         plt.plot(val_epochs, val_mae, label="Val MAE", linewidth=2)
         plt.plot(val_epochs, val_mse, label="Val MSE", linewidth=2)
         plt.xlabel("Epoch")
-        plt.ylabel("Error")
-        plt.title("MCNN Validation Curves")
+        plt.ylabel("Error (log scale)")
+        plt.yscale("log")
+        plt.title("MCNN Validation Curves (Log Scale)")
         plt.grid(True, alpha=0.3)
         plt.legend()
         plt.tight_layout()
@@ -93,7 +96,7 @@ def parse_args():
     parser.add_argument("--num-workers", type=int, default=4, help="Data loader workers")
     parser.add_argument("--crop-size", type=int, default=256, help="Training crop size")
     parser.add_argument("--lr", type=float, default=1e-5, help="Learning rate")
-    parser.add_argument("--weight-decay", type=float, default=1e-4, help="Weight decay")
+    parser.add_argument("--weight-decay", type=float, default=1e-5, help="Weight decay")
     parser.add_argument("--device", type=str, default="0", help="CUDA device id, e.g. 0")
     parser.add_argument("--seed", type=int, default=64678, help="Random seed")
     parser.add_argument("--val-every", type=int, default=1, help="Validate every N epochs")

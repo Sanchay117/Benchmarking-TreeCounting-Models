@@ -1,5 +1,7 @@
 import argparse
+import json
 import os
+from datetime import datetime
 
 import numpy as np
 import torch
@@ -16,8 +18,23 @@ def parse_args():
     parser.add_argument("--model-path", type=str, required=True, help="Path to a saved MCNN checkpoint")
     parser.add_argument("--device", type=str, default="0", help="CUDA device id, e.g. 0")
     parser.add_argument("--batch-size", type=int, default=1, help="Evaluation batch size")
-    parser.add_argument("--output-dir", type=str, default="predictions_mcnn", help="Directory for saved predictions")
+    parser.add_argument("--output-dir", type=str, default="eval", help="Root directory for evaluation runs")
+    parser.add_argument("--pred-dir", type=str, default="predictions_mcnn", help="Directory for saved .mat predictions")
     return parser.parse_args()
+
+
+def prepare_eval_run_dir(eval_root: str, prefix: str) -> str:
+    run_stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    run_dir = os.path.join(eval_root, f"{prefix}_{run_stamp}")
+    os.makedirs(run_dir, exist_ok=True)
+    return run_dir
+
+
+def save_hyperparams(run_dir: str, args):
+    hparams_path = os.path.join(run_dir, "hparams.json")
+    with open(hparams_path, "w", encoding="utf-8") as f:
+        json.dump(vars(args), f, indent=2, sort_keys=True)
+    return hparams_path
 
 
 def resolve_device(device_arg: str) -> torch.device:
@@ -39,9 +56,43 @@ def resolve_device(device_arg: str) -> torch.device:
     return torch.device("cuda")
 
 
+def load_legacy_h5(path: str, model: torch.nn.Module):
+    try:
+        import h5py
+    except ImportError as exc:
+        raise ImportError("h5py is required to load .h5 checkpoints") from exc
+
+    loaded = 0
+    state = model.state_dict()
+    with h5py.File(path, "r") as h5f:
+        for key in state:
+            candidates = [key, f"DME.{key}"]
+            selected = None
+            for candidate in candidates:
+                if candidate in h5f:
+                    selected = candidate
+                    break
+            if selected is None:
+                continue
+
+            tensor = torch.from_numpy(np.asarray(h5f[selected]))
+            if tensor.shape != state[key].shape:
+                continue
+            state[key].copy_(tensor)
+            loaded += 1
+
+    if loaded == 0:
+        raise ValueError(f"No compatible tensors were loaded from legacy checkpoint: {path}")
+    print(f"Loaded {loaded}/{len(state)} tensors from legacy checkpoint: {path}")
+
+
 def load_checkpoint(model: torch.nn.Module, model_path: str, device: torch.device):
     if not os.path.isfile(model_path):
         raise FileNotFoundError(f"Checkpoint not found: {model_path}")
+
+    if model_path.endswith(".h5"):
+        load_legacy_h5(model_path, model)
+        return -1
 
     checkpoint = torch.load(model_path, map_location=device)
     if isinstance(checkpoint, dict) and "model_state_dict" in checkpoint:
@@ -70,6 +121,9 @@ def compute_r2_score(targets, predictions):
 
 def evaluate(args):
     device = resolve_device(args.device)
+    run_dir = prepare_eval_run_dir(args.output_dir, "mcnn_test")
+    hparams_path = save_hyperparams(run_dir, args)
+    os.makedirs(args.pred_dir, exist_ok=True)
 
     dataset = KCLLondonMCNNDataset(root=args.data_dir, split=args.split, crop_size=None, random_flip=False)
     loader = torch.utils.data.DataLoader(
@@ -83,8 +137,6 @@ def evaluate(args):
     model = MCNN().to(device)
     load_checkpoint(model, args.model_path, device)
     model.eval()
-
-    os.makedirs(args.output_dir, exist_ok=True)
 
     abs_errors = []
     pred_counts = []
@@ -119,7 +171,7 @@ def evaluate(args):
             image_cpu = image[0].detach().cpu().numpy()
             gt_density_cpu = gt_density[0].detach().cpu().numpy()
             savemat(
-                os.path.join(args.output_dir, f"{name_str}.mat"),
+                os.path.join(args.pred_dir, f"{name_str}.mat"),
                 {
                     "estimation": np.squeeze(density_cpu),
                     "image": np.squeeze(image_cpu),
@@ -135,18 +187,30 @@ def evaluate(args):
 
     print(f"{args.model_path}: mae {mae}, mse {mse}, R2 {r2}\n")
 
+    final_stats = {
+        "model_path": args.model_path,
+        "split": args.split,
+        "num_images": int(len(results)),
+        "mae": mae,
+        "mse": mse,
+        "r2": r2,
+    }
+    final_stats_path = os.path.join(run_dir, "final_stats.json")
+    with open(final_stats_path, "w", encoding="utf-8") as f:
+        json.dump(final_stats, f, indent=2)
+
     text_lines = [str(row).replace("[", "").replace("]", "").replace(",", " ") + "\n" for row in results]
-    summary_path = os.path.join(args.output_dir, "test_mcnn_kcl.txt")
-    legacy_path = os.path.join(args.output_dir, "test.txt")
+    summary_path = os.path.join(run_dir, "test_mcnn_kcl.txt")
 
     with open(summary_path, "w", encoding="utf-8") as f:
         f.writelines(text_lines)
 
-    with open(legacy_path, "w", encoding="utf-8") as f:
-        f.writelines(text_lines)
 
+    print(f"Saved hyperparameters: {hparams_path}")
+    print(f"Saved eval run directory: {run_dir}")
+    print(f"Saved final stats: {final_stats_path}")
+    print(f"Saved .mat predictions to: {args.pred_dir}")
     print(f"Saved summary: {summary_path}")
-    print(f"Saved summary: {legacy_path}")
 
 
 if __name__ == "__main__":

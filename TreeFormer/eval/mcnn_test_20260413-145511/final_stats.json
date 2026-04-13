@@ -1,0 +1,8 @@
+{
+  "model_path": "../crowdcount-mcnn/final_models/mcnn_shtechB_110.h5",
+  "split": "test_data",
+  "num_images": 161,
+  "mae": 4086.64990234375,
+  "mse": 4132.59765625,
+  "r2": -7960.793081089243
+}
