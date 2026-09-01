@@ -1,0 +1,12 @@
+# @package _global_
+dataset:
+  root: ${dataset_roots.${hydra:runtime.choices.dataset}}
+dataset_weak:
+  root: ${dataset_roots.${hydra:runtime.choices.dataset_weak}}
+dataset_roots:
+  ps: /home/ashank/TreeCounting_Benchmark/tinytrees_dataset/tinytrees/ps
+  gf: /home/ashank/TreeCounting_Benchmark/tinytrees_dataset/tinytrees/gf
+  spot: /home/ashank/TreeCounting_Benchmark/tinytrees_dataset/tinytrees/spot
+  ps_weak: /home/ashank/TreeCounting_Benchmark/tinytrees_dataset/tinytrees/ps/train_weak
+  gf_weak: /home/ashank/TreeCounting_Benchmark/tinytrees_dataset/tinytrees/gf/train_weak
+  spot_weak: /home/ashank/TreeCounting_Benchmark/tinytrees_dataset/tinytrees/spot/train_weak

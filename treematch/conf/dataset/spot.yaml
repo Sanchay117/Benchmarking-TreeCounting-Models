@@ -1,0 +1,6 @@
+_target_: data.spot.SPOTStrong
+imsize: ${train.imsize}
+preload: True
+nbands: 4
+root: ""
+gsd: 1.5

@@ -1,0 +1,6 @@
+_target_: data.ps.PlanetScopeStrong
+imsize: ${train.imsize}
+preload: True
+nbands: 4
+root: /path/to/ps
+gsd: 3

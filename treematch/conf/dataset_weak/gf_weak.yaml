@@ -1,0 +1,4 @@
+_target_: data.gf.GaofenWeak
+root: ""
+imsize: ${train.imsize}
+preload: False

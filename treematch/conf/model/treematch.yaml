@@ -1,0 +1,17 @@
+_target_: models.treematch.Trainer
+name: treematch
+lr: 1e-5
+wc: 1  # weight for counting loss
+wot: 1  # weight for OT loss
+reg: 5e-3  # epsilon: entropic regularization term in OT (cost of moving mass)
+reg_m: 0.2  # tau: KL marginal regularization term in OT (cost of creating mass)
+alpha: 0.8  # maximum variation from residuals
+num_of_iter_in_ot: 100
+device: ${train.device}
+max_epoch: ${train.nepoch}
+val_epoch: ${train.val_freq}
+imsize: ${train.imsize}
+strong_ratio: ${train.strong_ratio}
+convert_density: False # whether to convert weak supervision to a density proxy with epanechnikov kernels
+slack: True # whether to use slack for down-weighting weak labels
+downscale_ratio: 1

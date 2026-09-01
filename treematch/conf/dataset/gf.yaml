@@ -1,0 +1,6 @@
+_target_: data.gf.GaofenStrong
+imsize: ${train.imsize}
+preload: True
+nbands: 4
+root: ""
+gsd: 0.8

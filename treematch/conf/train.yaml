@@ -1,0 +1,17 @@
+defaults:
+  - model: treematch
+  - backbone: resnet50
+  - dataset: ps
+  - dataset_weak: ${dataset}_weak
+  - _self_
+  - optional local: local
+
+train:
+  device: "cuda:0"
+  batch_size: 64
+  strong_ratio: 0.8
+  nepoch: 500
+  num_workers: 8
+  logdir: "./checkpoints"
+  imsize: 64
+  val_freq: 10
