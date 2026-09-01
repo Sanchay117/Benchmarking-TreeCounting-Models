@@ -3,3 +3,10 @@ TreeFormer/CSRNet_models
 TreeFormer/predictions_csrnet
 best_mae.pth
 latest.pth
+tinytrees_dataset/
+treematch_env/
+tinytrees/
+treematch/pretrained_models/
+**/__pycache__/
+treematch/test_load.py
+treematch/conf/local/
