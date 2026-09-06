@@ -62,11 +62,10 @@ class SPOTStrong(torch.utils.data.Dataset):
         self.points_by_tile = {name: g for name, g in points_gdf.groupby("tile")}
 
         self.crop = A.Compose([
-            A.PadIfNeeded(min_height=imsize, min_width=imsize, border_mode=0, fill=0),
+            A.PadIfNeeded(min_height=imsize, min_width=imsize, border_mode=0, value=0),
             A.CenterCrop(height=imsize, width=imsize),
         ],
-            keypoint_params=A.KeypointParams(format='yx', remove_invisible=True),
-            seed=42
+            keypoint_params=A.KeypointParams(format='yx', remove_invisible=True)
         )
         self.transform = T.Compose([
             T.Normalize(mean=mean, std=std)
@@ -138,7 +137,7 @@ class SPOTWeak(torch.utils.data.Dataset):
         self.geometries = self.geometries[self.geometries['crop_id'].astype(str).isin(on_disk)].reset_index(drop=True)
 
         self.crop = A.Compose([
-            A.PadIfNeeded(min_height=imsize, min_width=imsize, border_mode=0, fill=0),
+            A.PadIfNeeded(min_height=imsize, min_width=imsize, border_mode=0, value=0),
             A.CenterCrop(height=imsize, width=imsize),
         ],
             additional_targets={'valid': 'mask'}

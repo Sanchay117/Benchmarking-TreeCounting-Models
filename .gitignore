@@ -10,3 +10,6 @@ treematch/pretrained_models/
 **/__pycache__/
 treematch/test_load.py
 treematch/conf/local/
+prithvi_tinytrees/*.pth
+prithvi_tinytrees/checkpoints/*.pth
+prithvi_tinytrees/checkpoints/**/*.pth*.pth

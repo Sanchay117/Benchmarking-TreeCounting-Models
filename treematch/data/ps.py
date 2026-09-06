@@ -30,11 +30,10 @@ class PlanetScopeStrong(torch.utils.data.Dataset):
             T.Normalize(mean=mean, std=std)
         ])
         self.crop = A.Compose([
-            A.PadIfNeeded(min_height=imsize, min_width=imsize, border_mode=0, fill=0),
+            A.PadIfNeeded(min_height=imsize, min_width=imsize, border_mode=0, value=0),
             A.RandomCrop(height=imsize, width=imsize) if split == "train_strong" else A.CenterCrop(height=imsize, width=imsize)
         ],
-            keypoint_params=A.KeypointParams(format='yx', remove_invisible=True),
-            seed=42
+            keypoint_params=A.KeypointParams(format='yx', remove_invisible=True)
         )
         self.nbands = 4
 
@@ -102,11 +101,10 @@ class PlanetScopeWeak(torch.utils.data.Dataset):
             T.Normalize(mean=mean, std=std)
         ])
         self.crop = A.Compose([
-            A.PadIfNeeded(min_height=imsize, min_width=imsize, border_mode=0, fill=0),
+            A.PadIfNeeded(min_height=imsize, min_width=imsize, border_mode=0, value=0),
             A.RandomCrop(height=imsize, width=imsize)
         ],
-            keypoint_params=A.KeypointParams(format='yx', remove_invisible=True),
-            seed=42
+            keypoint_params=A.KeypointParams(format='yx', remove_invisible=True)
         )
         self.nbands = 4
 
