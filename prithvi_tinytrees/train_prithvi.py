@@ -157,12 +157,13 @@ if __name__ == "__main__":
     parser.add_argument("--sensor", type=str, default="ps", choices=["ps", "gf", "spot"])
     parser.add_argument("--batch_size", type=int, default=16)
     parser.add_argument("--epochs", type=int, default=50)
+    parser.add_argument("--strong_ratio", type=float, default=0.8, help="Ratio of strong data to use (1.0 means 100% strong)")
     args = parser.parse_args()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     # 1. Load Data
-    strong_batch_size = int(args.batch_size * 0.8)
+    strong_batch_size = int(args.batch_size * args.strong_ratio)
     weak_batch_size = args.batch_size - strong_batch_size
     
     dataset_strong = get_dataset(args.sensor, split="train_strong")
@@ -188,7 +189,7 @@ if __name__ == "__main__":
         reg_m=0.2,
         num_of_iter_in_ot=100, 
         lr=1e-5, 
-        strong_ratio=0.8, 
+        strong_ratio=args.strong_ratio, 
         slack=True, 
         convert_density=False,
         max_epoch=args.epochs, 
@@ -199,7 +200,8 @@ if __name__ == "__main__":
     print(f"Starting training on {args.sensor} with {args.model}...")
     
     run_id = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    checkpoint_dir = os.path.join(os.path.dirname(__file__), "checkpoints", f"{args.model}_{args.sensor}_{run_id}")
+    weak_pct = int(round((1.0 - args.strong_ratio) * 100))
+    checkpoint_dir = os.path.join(os.path.dirname(__file__), "checkpoints", f"{args.model}_{args.sensor}_weak{weak_pct}_{run_id}")
     os.makedirs(checkpoint_dir, exist_ok=True)
     
     logger = SimpleLogger()
