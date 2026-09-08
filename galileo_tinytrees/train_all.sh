@@ -40,6 +40,12 @@ for MODEL in "${MODELS[@]}"; do
                 continue
             fi
 
+            EXISTING_CKPT=$(ls -d checkpoints/${MODEL}_${SENSOR}_weak${WEAK_PCT}_*/checkpoint_best.pth 2>/dev/null | tail -n 1)
+            if [ -n "$EXISTING_CKPT" ]; then
+                echo "Checkpoint already exists: $EXISTING_CKPT. Skipping."
+                continue
+            fi
+
             echo "-----------------------------------------------------------"
             echo "Training $MODEL on $SENSOR ($SUP_LABEL, weak=${WEAK_PCT}%)"
             echo "-----------------------------------------------------------"
