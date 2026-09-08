@@ -18,3 +18,5 @@ anysat_tinytrees/checkpoints/*.pth
 anysat_tinytrees/checkpoints/**/*.pth*.pth
 *.pt
 *.pth
+galileo_tinytrees/checkpoints/
+

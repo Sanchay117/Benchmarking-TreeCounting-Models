@@ -1,0 +1,227 @@
+# Galileo
+
+Learning Global and Local Features in Pretrained Remote Sensing Models
+
+<img src="diagrams/inference.png" alt="Galileo_diagram" height="300px"/>
+
+Galileo is a family of pretrained remote sensing models. These models have been pretrained on a diversity of remote sensing inputs, and perform well on a range of benchmark tasks. For more information, please see our [paper](https://arxiv.org/abs/2502.09356).
+
+### Using Galileo
+
+Galileo can be loaded either from `src`, or from `single_file_galileo.py` for easy porting to other codebases:
+
+```python
+from single_file_galileo import Encoder as SingleFileEncoder
+from src.galileo import Encoder
+
+
+src_model = Encoder.load_from_folder(DATA_FOLDER / "models/nano")
+sf_model = SingleFileEncoder.load_from_folder(
+    DATA_FOLDER / "models/nano", device=torch.device("cpu")
+)
+
+for model_p, sf_model_p in zip(src_model.parameters(), sf_model.parameters()):
+    assert torch.equal(model_p, sf_model_p)
+```
+
+The inputs to Galileo are described in the [`MaskedOutput`](src/masking.py#L116):
+
+```python
+class MaskedOutput(NamedTuple):
+    """
+    A mask can take 3 values:
+    0: seen by the encoder (i.e. makes the key and value tokens in the decoder)
+    1: not seen by the encoder, and ignored by the decoder
+    2: not seen by the encoder, and processed by the decoder (the decoder's query values)
+    """
+
+    space_time_x: torch.Tensor  # [B, H, W, T, len(SPACE_TIME_BANDS)]
+    space_x: torch.Tensor  # [B, H, W, len(SPACE_BANDS)]
+    time_x: torch.Tensor  # [B, T, len(TIME_BANDS)]
+    static_x: torch.Tensor  # [B, len(STATIC_BANDS)]
+    space_time_mask: torch.Tensor  # [B, H, W, T, len(SPACE_TIME_BANDS_GROUPS_IDX)]
+    space_mask: torch.Tensor  # [B, H, W, len(SPACE_BAND_GROUPS_IDX)]
+    time_mask: torch.Tensor   # [B, T, len(TIME_BAND_GROUPS_IDX)]
+    static_mask: torch.Tensor  # [B, len(STATIC_BAND_GROUPS_IDX)]
+    months: torch.Tensor  # [B, T]
+```
+
+Each of these bands are described in [`single_file_galileo.py`](single_file_galileo.py#L24).
+
+Alternatively, a [utility function](src/data/utils.py#L36) is provided to transform the bands into `MaskedOutput` objects. This transformation is for a single instance (i.e. it omits the `B` dimension above). This function optionally normalizes the data against the Galileo pre-training statistics.
+
+```python
+from src.data.utils import S2_BANDS, construct_galileo_input
+
+t, h, w = 2, 4, 4
+normalize = True
+s2 = torch.randn((t, h, w, len(S2_BANDS)))
+masked_output = construct_galileo_input(s2=s2, normalize=normalize)
+```
+
+If you want to see Galileo being used on real data, we also have a [marimo app](visualizing_embeddings.py) which generates embeddings for a real training tif file:
+
+<img src="diagrams/model_outputs.png" alt="Galileo model outputs" height="300px"/>
+
+### Copernicus Data Explorer
+
+We provide an interactive [Copernicus marimo GUI](copernicus_marimo.py) for exploring and downloading Sentinel-1 and Sentinel-2 satellite data:
+
+```bash
+# Run the interactive GUI
+uv run marimo run copernicus_marimo.py
+```
+
+**Features:**
+- Configure Copernicus credentials (free account required)
+- Search and download Sentinel-1 (SAR) and Sentinel-2 (optical) data
+- Interactive parameter selection (location, dates, satellite type)
+- **Time slider**: Browse through multiple satellite images chronologically to compare dates and visualize temporal changes
+- Visualize downloaded imagery with target area overlay
+- Optional crop to exact bounding box for focused analysis
+- **Export to GeoTIFF**: Export any displayed image to georeferenced GeoTIFF format for use in QGIS, ArcGIS, or other GIS software
+- Automatic caching to avoid re-downloads
+
+**Get free Copernicus credentials:**
+1. Visit https://dataspace.copernicus.eu/
+2. Register for a free account (no credit card required)
+3. Use your username/email and password in the GUI or .env file
+
+**Authentication:**
+The Copernicus Data Space Ecosystem uses username/password authentication for downloading satellite data via the OData catalog API. Simply provide your account credentials:
+
+```bash
+# In your .env file:
+COPERNICUS_USERNAME=your_email@example.com
+COPERNICUS_PASSWORD=your_password
+```
+
+The GUI will guide you through credential setup and data download.
+
+**Programmatic Usage:**
+
+You can also use the Copernicus client programmatically to fetch and export satellite data:
+
+```python
+from src.data.copernicus import CopernicusClient
+from src.data.copernicus.image_processing import extract_rgb_composite
+
+# Initialize client
+client = CopernicusClient()
+
+# Fetch Sentinel-2 data
+bbox = [6.15, 49.11, 6.16, 49.12]  # [min_lon, min_lat, max_lon, max_lat]
+s2_files = client.fetch_s2(
+    bbox=bbox,
+    start_date="2023-06-01",
+    end_date="2023-06-30",
+    max_cloud_cover=30,
+    max_products=1
+)
+
+# Process and export to GeoTIFF
+image_data = extract_rgb_composite(s2_files[0], bbox=bbox)
+geotiff_path = client.export_to_geotiff(image_data, "output.tif", satellite_type="S2")
+print(f"Exported to {geotiff_path}")
+```
+
+See [examples/export_geotiff_example.py](examples/export_geotiff_example.py) for more detailed examples.
+
+### Model weights
+The nano model weights are available [on github](data/models/nano).
+
+Other model sizes (including nano) are available [on huggingface](https://huggingface.co/nasaharvest/galileo).
+
+You can download them locally with the following command (you will need to install the `huggingface_hub[cli]` package first):
+
+```bash
+hf download nasaharvest/galileo --include "models/**" --local-dir data
+```
+
+#### Docker setup
+
+A `Dockerfile` is available to build a container that includes all
+dependencies as well as the models. To build the image:
+
+```bash
+docker build -t galileo .
+```
+
+Once completed, you can run the built image with:
+
+```bash
+# Interactive shell
+docker run --rm -ti galileo
+
+# Run training (with GPU)
+docker run --rm -ti --gpus all galileo uv run python train.py --config_file nano.json
+
+# Run without GPU
+docker run --rm -ti galileo uv run python train.py --config_file nano.json
+```
+
+**Notes:**
+- GPU support requires the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+- To mount local data: `docker run --rm -ti -v $(pwd)/data:/model/galileo/data galileo`
+- Apple Silicon users need: `--platform linux/amd64` flag for both build and run commands
+
+### Development
+
+**Setup:**
+```bash
+# Option 1: Automated setup (installs uv if needed)
+./setup_dev.sh
+
+# Option 2: Manual setup with uv
+uv sync                    # Install all dependencies (includes dev by default)
+uv run pre-commit install  # Setup pre-commit hooks
+```
+
+**Run tests with coverage:**
+```bash
+uv run coverage run -m unittest discover -s tests
+uv run coverage report -m
+```
+
+**Other common commands:**
+```bash
+uv run ruff check .                    # Lint code
+uv run ruff format .                   # Format code
+uv run mypy .                          # Type checking
+uv run pre-commit run --all-files      # Run all pre-commit checks
+uv run marimo run visualizing_embeddings.py  # Run marimo app for visualization
+uv run marimo edit visualizing_embeddings.py # Edit marimo app
+python update_notebook.py             # Regenerate Jupyter notebook with embedded plots for GitHub
+```
+
+**Marimo notebook workflow:**
+The [marimo app](visualizing_embeddings.py) provides interactive visualization of Galileo model outputs. When you make changes to the marimo notebook:
+
+1. Edit interactively: `uv run marimo edit visualizing_embeddings.py`
+2. Regenerate GitHub version: `python update_notebook.py`
+3. Commit both files: `git add visualizing_embeddings.py __marimo__/visualizing_embeddings.ipynb`
+
+The `update_notebook.py` script ensures plots are properly embedded in the Jupyter notebook for GitHub rendering.
+
+**Optional - Codecov setup:**
+1. Sign in at https://codecov.io with GitHub
+2. Add your repo and copy the upload token
+3. Add token to GitHub: Settings → Secrets → Actions → New secret
+   - Name: `CODECOV_TOKEN`
+   - Value: (paste token)
+
+### Reference
+
+If you find this code useful, please cite the following paper:
+
+```
+@misc{tseng2025galileolearninggloballocal,
+      title={Galileo: Learning Global and Local Features in Pretrained Remote Sensing Models},
+      author={Gabriel Tseng and Anthony Fuller and Marlena Reil and Henry Herzog and Patrick Beukema and Favyen Bastani and James R. Green and Evan Shelhamer and Hannah Kerner and David Rolnick},
+      year={2025},
+      eprint={2502.09356},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2502.09356},
+}
+```

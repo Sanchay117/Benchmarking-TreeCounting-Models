@@ -1,0 +1,101 @@
+"""Copernicus Data Space Ecosystem client for fetching Sentinel-1 and Sentinel-2 data."""
+
+from .band_recipes import (
+    apply_band_recipe,
+    get_available_recipes,
+    get_recipe_by_name,
+    get_recipe_names,
+)
+from .client import CopernicusClient
+from .enums import S1AcquisitionMode, S1Polarization, S1ProductType, S2Band
+from .galileo_adapter import (
+    copernicus_to_galileo_tif,
+    embeddings_to_geotiff,
+    get_band_info,
+    validate_galileo_tif,
+)
+from .image_processing import (
+    create_false_color_composite,
+    crop_to_bbox,
+    extract_all_s1_bands,
+    extract_all_s2_bands,
+    extract_rgb_composite,
+    extract_sar_composite,
+    get_available_bands,
+    get_image_statistics,
+)
+from .indices import (
+    calculate_evi,
+    calculate_nbr,
+    calculate_ndvi,
+    calculate_ndwi,
+    calculate_savi,
+)
+from .quality import (
+    apply_cloud_mask_to_image,
+    assess_s1_quality,
+    assess_s2_quality,
+    extract_cloud_mask,
+    quality_gate,
+)
+from .utils import create_validated_bbox, find_granule_directory
+from .visualization import (
+    create_band_analysis_plot,
+    create_comparison_plot,
+    create_coverage_map,
+    create_metadata_summary,
+    create_sar_comparison_plot,
+    display_sar_image,
+    display_satellite_image,
+)
+
+__all__ = [
+    "CopernicusClient",
+    # Enums
+    "S2Band",
+    "S1ProductType",
+    "S1Polarization",
+    "S1AcquisitionMode",
+    # Galileo integration
+    "copernicus_to_galileo_tif",
+    "embeddings_to_geotiff",
+    "validate_galileo_tif",
+    "get_band_info",
+    # Band recipes
+    "get_available_recipes",
+    "get_recipe_names",
+    "get_recipe_by_name",
+    "apply_band_recipe",
+    # Image processing
+    "extract_rgb_composite",
+    "extract_sar_composite",
+    "extract_all_s2_bands",
+    "extract_all_s1_bands",
+    "crop_to_bbox",
+    "get_available_bands",
+    "create_false_color_composite",
+    "get_image_statistics",
+    # Quality control
+    "extract_cloud_mask",
+    "apply_cloud_mask_to_image",
+    "assess_s1_quality",
+    "assess_s2_quality",
+    "quality_gate",
+    # Spectral indices
+    "calculate_ndvi",
+    "calculate_ndwi",
+    "calculate_evi",
+    "calculate_savi",
+    "calculate_nbr",
+    # Utilities
+    "create_validated_bbox",
+    "find_granule_directory",
+    # Visualization
+    "create_coverage_map",
+    "display_satellite_image",
+    "display_sar_image",
+    "create_comparison_plot",
+    "create_sar_comparison_plot",
+    "create_metadata_summary",
+    "create_band_analysis_plot",
+]
