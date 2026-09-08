@@ -110,3 +110,16 @@ Below is the evaluation of the `Prithvi-EO-2.0` models fine-tuned on the TINYTRE
 | **Prithvi-600M / PlanetScope** | 100% Strong | 75.54 | 0.48 | 51.0 | 153.75 |
 | **Prithvi-600M / PlanetScope** | 80% Strong + 20% Weak | 74.69 | 0.48 | 51.2 | 154.64 |
 | **Prithvi-600M / SPOT-6** | 100% Strong | 150.14 | 0.36 | 38.2 | 8.16 |
+
+### AnySat Foundation Model Fine-Tuning
+
+Below is the evaluation of the `AnySat` models fine-tuned on the TINYTREES benchmark using the TreeMatch framework (`treematch` uOT Trainer + `FCNDecoder`). The models were fine-tuned with 80% Strong + 20% Weak labels. (Note: The nMAE outputs from the script have been converted to percentages to match the tables above).
+
+| Model / Sensor | Supervision Used | RMSE (↓) | R² (↑) | nMAE (↓) | MAE |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **AnySat / Gaofen-2** | 80% Strong + 20% Weak | 89.11 | 0.10 | 60.0 | 15.64 |
+| **AnySat / PlanetScope** | 80% Strong + 20% Weak | 82.57 | 0.36 | 55.2 | 166.60 |
+| **AnySat / SPOT-6** | 80% Strong + 20% Weak | 160.70 | 0.26 | 41.1 | 8.77 |
+| **AnySat_full / Gaofen-2** | 80% Strong + 20% Weak | 89.22 | 0.10 | 59.9 | 15.62 |
+| **AnySat_full / PlanetScope** | 80% Strong + 20% Weak | 81.28 | 0.39 | 53.0 | 159.84 |
+| **AnySat_full / SPOT-6** | 80% Strong + 20% Weak | 156.52 | 0.30 | 39.8 | 8.50 |

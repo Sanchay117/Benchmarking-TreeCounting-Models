@@ -1,0 +1,13 @@
+Initializing AnySat backbone (anysat)...
+Loaded anysat weights from /home/ashank/TreeCounting_Benchmark/AnySat/.models/AnySat.pth
+Loading checkpoint: checkpoints/anysat_spot_20260907_003006/checkpoint_best.pth...
+Starting evaluation on spot test set (Total batches: 31)...
+
+==============================
+=== Test Results ===
+==============================
+R2: 0.2630
+MAE: 8.7720
+NMAE: 0.4110
+RMSE: 160.6985
+==============================

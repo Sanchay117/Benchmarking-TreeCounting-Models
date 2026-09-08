@@ -13,4 +13,8 @@ treematch/conf/local/
 prithvi_tinytrees/*.pth
 prithvi_tinytrees/checkpoints/*.pth
 prithvi_tinytrees/checkpoints/**/*.pth*.pth
+anysat_tinytrees/*.pth
+anysat_tinytrees/checkpoints/*.pth
+anysat_tinytrees/checkpoints/**/*.pth*.pth
 *.pt
+*.pth
