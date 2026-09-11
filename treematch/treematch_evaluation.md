@@ -113,13 +113,38 @@ Below is the evaluation of the `Prithvi-EO-2.0` models fine-tuned on the TINYTRE
 
 ### AnySat Foundation Model Fine-Tuning
 
-Below is the evaluation of the `AnySat` models fine-tuned on the TINYTREES benchmark using the TreeMatch framework (`treematch` uOT Trainer + `FCNDecoder`). The models were fine-tuned with 80% Strong + 20% Weak labels. (Note: The nMAE outputs from the script have been converted to percentages to match the tables above).
+Below is the evaluation of the `AnySat` models fine-tuned on the TINYTREES benchmark using the TreeMatch framework (`treematch` uOT Trainer + `FCNDecoder`). The models were evaluated across both 100% Strong and 80% Strong + 20% Weak supervision regimes. (Note: The nMAE outputs from the script have been converted to percentages to match the tables above).
 
 | Model / Sensor | Supervision Used | RMSE (↓) | R² (↑) | nMAE (↓) | MAE |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **AnySat / Gaofen-2** | 80% Strong + 20% Weak | 89.11 | 0.10 | 60.0 | 15.64 |
-| **AnySat / PlanetScope** | 80% Strong + 20% Weak | 82.57 | 0.36 | 55.2 | 166.60 |
-| **AnySat / SPOT-6** | 80% Strong + 20% Weak | 160.70 | 0.26 | 41.1 | 8.77 |
-| **AnySat_full / Gaofen-2** | 80% Strong + 20% Weak | 89.22 | 0.10 | 59.9 | 15.62 |
-| **AnySat_full / PlanetScope** | 80% Strong + 20% Weak | 81.28 | 0.39 | 53.0 | 159.84 |
-| **AnySat_full / SPOT-6** | 80% Strong + 20% Weak | 156.52 | 0.30 | 39.8 | 8.50 |
+| **AnySat / Gaofen-2** | 100% Strong | 89.11 | 0.10 | 60.0 | 15.64 |
+| **AnySat / PlanetScope** | 100% Strong | 82.57 | 0.36 | 55.2 | 166.60 |
+| **AnySat / SPOT-6** | 100% Strong | 160.70 | 0.26 | 41.1 | 8.77 |
+| **AnySat_full / Gaofen-2** | 100% Strong | 89.22 | 0.10 | 59.9 | 15.62 |
+| **AnySat_full / PlanetScope** | 100% Strong | 81.28 | 0.39 | 53.0 | 159.84 |
+| **AnySat_full / SPOT-6** | 100% Strong | 156.52 | 0.30 | 39.8 | 8.50 |
+
+### Galileo Foundation Model Fine-Tuning
+
+Below is the evaluation of the `Galileo` models fine-tuned on the TINYTREES benchmark using the TreeMatch framework (`treematch` uOT Trainer + `FCNDecoder`). The models were fine-tuned across both 100% Strong and 80% Strong + 20% Weak supervision regimes. (Note: The nMAE outputs from the script have been converted to percentages to match the tables above).
+
+| Model / Sensor | Supervision Used | RMSE (↓) | R² (↑) | nMAE (↓) | MAE |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Galileo-Nano / Gaofen-2** | 100% Strong | 88.00 | 0.13 | 57.2 | 14.91 |
+| **Galileo-Nano / Gaofen-2** | 80% Strong + 20% Weak | 95.67 | -0.03 | 62.2 | 16.23 |
+| **Galileo-Nano / PlanetScope** | 100% Strong | 88.99 | 0.29 | 59.7 | 180.18 |
+| **Galileo-Nano / PlanetScope** | 80% Strong + 20% Weak | 86.38 | 0.34 | 57.9 | 174.61 |
+| **Galileo-Nano / SPOT-6** | 100% Strong | 146.85 | 0.38 | 37.1 | 7.91 |
+| **Galileo-Nano / SPOT-6** | 80% Strong + 20% Weak | 144.89 | 0.40 | 36.3 | 7.74 |
+| **Galileo-Tiny / Gaofen-2** | 100% Strong | 85.85 | 0.17 | 58.9 | 15.37 |
+| **Galileo-Tiny / Gaofen-2** | 80% Strong + 20% Weak | 90.77 | 0.07 | 60.6 | 15.81 |
+| **Galileo-Tiny / PlanetScope** | 100% Strong | 86.21 | 0.35 | 54.5 | 164.39 |
+| **Galileo-Tiny / PlanetScope** | 80% Strong + 20% Weak | 84.96 | 0.39 | 55.0 | 166.00 |
+| **Galileo-Tiny / SPOT-6** | 100% Strong | 150.75 | 0.35 | 37.1 | 7.93 |
+| **Galileo-Tiny / SPOT-6** | 80% Strong + 20% Weak | 145.34 | 0.40 | 36.2 | 7.73 |
+| **Galileo-Base / Gaofen-2** | 100% Strong | 81.76 | 0.24 | 56.0 | 14.60 |
+| **Galileo-Base / Gaofen-2** | 80% Strong + 20% Weak | 89.75 | 0.09 | 59.9 | 15.62 |
+| **Galileo-Base / PlanetScope** | 100% Strong | 88.11 | 0.26 | 59.7 | 180.11 |
+| **Galileo-Base / PlanetScope** | 80% Strong + 20% Weak | 90.15 | 0.24 | 60.6 | 182.94 |
+| **Galileo-Base / SPOT-6** | 100% Strong | 145.81 | 0.39 | 36.8 | 7.86 |
+| **Galileo-Base / SPOT-6** | 80% Strong + 20% Weak | 147.06 | 0.38 | 37.3 | 7.96 |

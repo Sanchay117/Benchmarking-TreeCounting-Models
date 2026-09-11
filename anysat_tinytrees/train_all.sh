@@ -2,25 +2,59 @@
 set -e
 
 PYTHON_BIN="/media/NAS/ashank/conda_envs/prithvi_env/bin/python"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 
-cd /home/ashank/TreeCounting_Benchmark/anysat_tinytrees
+MODELS=("anysat" "anysat_full")
+RATIOS=(1.0 0.8)
+SENSORS=("ps" "gf" "spot")
 
-for VARIANT in anysat anysat_full; do
-    echo "============================================="
-    echo "Training $VARIANT"
-    echo "============================================="
+# Optional CLI arguments to override: ./train_all.sh [model] [ratio] [sensor]
+TARGET_MODEL=${1:-"all"}
+TARGET_RATIO=${2:-"all"}
+TARGET_SENSOR=${3:-"all"}
 
-    # Train on PlanetScope
-    echo "Training $VARIANT on PlanetScope..."
-    $PYTHON_BIN -u train_anysat.py --sensor ps --model_variant $VARIANT --epochs 50
+echo "==========================================================="
+echo "   AnySat Foundation Model Fine-Tuning Pipeline            "
+echo "==========================================================="
 
-    # Train on Gaofen-2
-    echo "Training $VARIANT on Gaofen-2..."
-    $PYTHON_BIN -u train_anysat.py --sensor gf --model_variant $VARIANT --epochs 50
+for MODEL in "${MODELS[@]}"; do
+    if [ "$TARGET_MODEL" != "all" ] && [ "$TARGET_MODEL" != "$MODEL" ]; then
+        continue
+    fi
 
-    # Train on SPOT-6
-    echo "Training $VARIANT on SPOT-6..."
-    $PYTHON_BIN -u train_anysat.py --sensor spot --model_variant $VARIANT --epochs 50
+    for RATIO in "${RATIOS[@]}"; do
+        if [ "$TARGET_RATIO" != "all" ] && [ "$TARGET_RATIO" != "$RATIO" ]; then
+            continue
+        fi
+
+        WEAK_PCT=$(python -c "print(int(round((1.0 - $RATIO) * 100)))")
+        if [ "$RATIO" == "1.0" ]; then
+            SUP_LABEL="100% Strong"
+        else
+            SUP_LABEL="80% Strong + 20% Weak"
+        fi
+
+        for SENSOR in "${SENSORS[@]}"; do
+            if [ "$TARGET_SENSOR" != "all" ] && [ "$TARGET_SENSOR" != "$SENSOR" ]; then
+                continue
+            fi
+
+            echo "-----------------------------------------------------------"
+            echo "Training $MODEL on $SENSOR ($SUP_LABEL, weak=${WEAK_PCT}%)"
+            echo "-----------------------------------------------------------"
+
+            $PYTHON_BIN -u train_anysat.py \
+                --sensor "$SENSOR" \
+                --model_variant "$MODEL" \
+                --strong_ratio "$RATIO" \
+                --epochs 50 \
+                --batch_size 16 \
+                --lr 1e-5
+        done
+    done
 done
 
-echo "All training completed!"
+echo "==========================================================="
+echo "All requested AnySat training runs completed successfully!"
+echo "==========================================================="

@@ -2,31 +2,65 @@
 set -e
 
 PYTHON_BIN="/media/NAS/ashank/conda_envs/prithvi_env/bin/python"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 
-cd /home/ashank/TreeCounting_Benchmark/anysat_tinytrees
+MODELS=("anysat" "anysat_full")
+RATIOS=(1.0 0.8)
+SENSORS=("ps" "gf" "spot")
 
-for VARIANT in anysat anysat_full; do
-    echo "============================================="
-    echo "Evaluating $VARIANT"
-    echo "============================================="
+echo "==========================================================="
+echo "   AnySat Foundation Model Evaluation Pipeline             "
+echo "==========================================================="
 
-    # Dynamically find the latest checkpoint directory (ignoring the 001455 test run if any)
-    PS_DIR=$(ls -d checkpoints/${VARIANT}_ps_* | tail -n 1)
-    GF_DIR=$(ls -d checkpoints/${VARIANT}_gf_* | tail -n 1)
-    SPOT_DIR=$(ls -d checkpoints/${VARIANT}_spot_* | tail -n 1)
+for MODEL in "${MODELS[@]}"; do
+    for RATIO in "${RATIOS[@]}"; do
+        WEAK_PCT=$(python -c "print(int(round((1.0 - $RATIO) * 100)))")
+        for SENSOR in "${SENSORS[@]}"; do
+            # Check for pattern with weak_pct first, then fallback to legacy naming if weak_pct is 0
+            if [ "$WEAK_PCT" -eq 0 ]; then
+                PATTERN_NEW="checkpoints/${MODEL}_${SENSOR}_weak0_*"
+                PATTERN_OLD="checkpoints/${MODEL}_${SENSOR}_[0-9]*"
+                MATCHING_DIRS=($(ls -d $PATTERN_NEW $PATTERN_OLD 2>/dev/null | sort -V))
+            else
+                PATTERN="checkpoints/${MODEL}_${SENSOR}_weak${WEAK_PCT}_*"
+                MATCHING_DIRS=($(ls -d $PATTERN 2>/dev/null | sort -V))
+            fi
 
-    PS_CHECKPOINT="${PS_DIR}/checkpoint_best.pth"
-    GF_CHECKPOINT="${GF_DIR}/checkpoint_best.pth"
-    SPOT_CHECKPOINT="${SPOT_DIR}/checkpoint_best.pth"
+            if [ ${#MATCHING_DIRS[@]} -eq 0 ]; then
+                echo "No checkpoint found for $MODEL on $SENSOR (weak ${WEAK_PCT}%). Skipping."
+                continue
+            fi
 
-    echo "Evaluating $VARIANT on PlanetScope using $PS_CHECKPOINT..."
-    $PYTHON_BIN -u test_anysat.py --sensor ps --model_variant $VARIANT --checkpoint $PS_CHECKPOINT > "logs_eval_${VARIANT}_ps.txt"
+            LATEST_DIR="${MATCHING_DIRS[-1]}"
+            CHECKPOINT="${LATEST_DIR}/checkpoint_best.pth"
 
-    echo "Evaluating $VARIANT on Gaofen-2 using $GF_CHECKPOINT..."
-    $PYTHON_BIN -u test_anysat.py --sensor gf --model_variant $VARIANT --checkpoint $GF_CHECKPOINT > "logs_eval_${VARIANT}_gf.txt"
+            if [ ! -f "$CHECKPOINT" ]; then
+                CHECKPOINT="${LATEST_DIR}/latest.pth"
+            fi
 
-    echo "Evaluating $VARIANT on SPOT-6 using $SPOT_CHECKPOINT..."
-    $PYTHON_BIN -u test_anysat.py --sensor spot --model_variant $VARIANT --checkpoint $SPOT_CHECKPOINT > "logs_eval_${VARIANT}_spot.txt"
+            if [ ! -f "$CHECKPOINT" ]; then
+                echo "Warning: Checkpoint file not found in $LATEST_DIR. Skipping."
+                continue
+            fi
+
+            LOG_FILE="logs_eval_${MODEL}_${SENSOR}_weak${WEAK_PCT}.txt"
+            echo "Evaluating $MODEL on $SENSOR (weak ${WEAK_PCT}%) using $CHECKPOINT..."
+            $PYTHON_BIN -u test_anysat.py \
+                --sensor "$SENSOR" \
+                --model_variant "$MODEL" \
+                --checkpoint "$CHECKPOINT" \
+                --batch_size 16 > "$LOG_FILE" 2>&1
+
+            echo "Output saved to $LOG_FILE"
+            cat "$LOG_FILE" | grep -A 6 "=== Test Results ===" || true
+            echo ""
+        done
+    done
 done
 
-echo "All evaluations completed!"
+echo "==========================================================="
+echo "All available AnySat evaluations completed!"
+echo "Updating results markdown..."
+$PYTHON_BIN update_results.py || true
+echo "==========================================================="
