@@ -117,12 +117,18 @@ Below is the evaluation of the `AnySat` models fine-tuned on the TINYTREES bench
 
 | Model / Sensor | Supervision Used | RMSE (↓) | R² (↑) | nMAE (↓) | MAE |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **AnySat / Gaofen-2** | 100% Strong | 89.11 | 0.10 | 60.0 | 15.64 |
-| **AnySat / PlanetScope** | 100% Strong | 82.57 | 0.36 | 55.2 | 166.60 |
-| **AnySat / SPOT-6** | 100% Strong | 160.70 | 0.26 | 41.1 | 8.77 |
-| **AnySat_full / Gaofen-2** | 100% Strong | 89.22 | 0.10 | 59.9 | 15.62 |
-| **AnySat_full / PlanetScope** | 100% Strong | 81.28 | 0.39 | 53.0 | 159.84 |
-| **AnySat_full / SPOT-6** | 100% Strong | 156.52 | 0.30 | 39.8 | 8.50 |
+| **AnySat / Gaofen-2** | 100% Strong | 88.96 | 0.11 | 59.9 | 15.63 |
+| **AnySat / Gaofen-2** | 80% Strong + 20% Weak | 89.51 | 0.09 | 59.9 | 15.61 |
+| **AnySat / PlanetScope** | 100% Strong | 81.78 | 0.38 | 53.8 | 162.47 |
+| **AnySat / PlanetScope** | 80% Strong + 20% Weak | 81.55 | 0.38 | 53.9 | 162.59 |
+| **AnySat / SPOT-6** | 100% Strong | 160.16 | 0.27 | 40.9 | 8.73 |
+| **AnySat / SPOT-6** | 80% Strong + 20% Weak | 165.53 | 0.22 | 42.5 | 9.06 |
+| **AnySat_full / Gaofen-2** | 100% Strong | 88.37 | 0.12 | 58.5 | 15.26 |
+| **AnySat_full / Gaofen-2** | 80% Strong + 20% Weak | 90.05 | 0.08 | 59.4 | 15.49 |
+| **AnySat_full / PlanetScope** | 100% Strong | 81.83 | 0.38 | 53.9 | 162.69 |
+| **AnySat_full / PlanetScope** | 80% Strong + 20% Weak | 87.17 | 0.28 | 57.5 | 173.47 |
+| **AnySat_full / SPOT-6** | 100% Strong | 169.25 | 0.18 | 43.4 | 9.27 |
+| **AnySat_full / SPOT-6** | 80% Strong + 20% Weak | 158.48 | 0.28 | 40.4 | 8.63 |
 
 ### Galileo Foundation Model Fine-Tuning
 

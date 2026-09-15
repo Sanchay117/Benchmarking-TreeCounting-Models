@@ -19,12 +19,12 @@ for MODEL in "${MODELS[@]}"; do
         for SENSOR in "${SENSORS[@]}"; do
             # Check for pattern with weak_pct first, then fallback to legacy naming if weak_pct is 0
             if [ "$WEAK_PCT" -eq 0 ]; then
-                PATTERN_NEW="checkpoints/${MODEL}_${SENSOR}_weak0_*"
-                PATTERN_OLD="checkpoints/${MODEL}_${SENSOR}_[0-9]*"
-                MATCHING_DIRS=($(ls -d $PATTERN_NEW $PATTERN_OLD 2>/dev/null | sort -V))
+                MATCHING_DIRS=($(ls -d checkpoints/${MODEL}_${SENSOR}_weak0_* 2>/dev/null | sort -V))
+                if [ ${#MATCHING_DIRS[@]} -eq 0 ]; then
+                    MATCHING_DIRS=($(ls -d checkpoints/${MODEL}_${SENSOR}_[0-9]* 2>/dev/null | sort -V))
+                fi
             else
-                PATTERN="checkpoints/${MODEL}_${SENSOR}_weak${WEAK_PCT}_*"
-                MATCHING_DIRS=($(ls -d $PATTERN 2>/dev/null | sort -V))
+                MATCHING_DIRS=($(ls -d checkpoints/${MODEL}_${SENSOR}_weak${WEAK_PCT}_* 2>/dev/null | sort -V))
             fi
 
             if [ ${#MATCHING_DIRS[@]} -eq 0 ]; then

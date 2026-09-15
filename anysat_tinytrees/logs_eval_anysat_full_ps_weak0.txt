@@ -1,0 +1,19 @@
+/home/ashank/TreeCounting_Benchmark/treematch/data/ps.py:33: UserWarning: Argument(s) 'value' are not valid for transform PadIfNeeded
+  A.PadIfNeeded(min_height=imsize, min_width=imsize, border_mode=0, value=0),
+Initializing AnySat backbone (anysat_full)...
+/home/ashank/TreeCounting_Benchmark/anysat_tinytrees/train_anysat.py:76: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(model_path, map_location="cpu")
+Loaded anysat_full weights from /home/ashank/TreeCounting_Benchmark/AnySat/.models/AnySat_full.pth
+Loading checkpoint: checkpoints/anysat_full_ps_weak0_20260911_164708/checkpoint_best.pth...
+/home/ashank/TreeCounting_Benchmark/anysat_tinytrees/test_anysat.py:59: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(args.checkpoint, map_location="cpu")
+Starting evaluation on ps test set (Total batches: 41)...
+
+==============================
+=== Test Results ===
+==============================
+R2: 0.3785
+MAE: 162.6855
+NMAE: 0.5392
+RMSE: 81.8314
+==============================
