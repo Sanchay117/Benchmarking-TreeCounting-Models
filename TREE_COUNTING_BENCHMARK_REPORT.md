@@ -38,6 +38,25 @@ TINYTREES is the premier large-scale benchmark designed specifically for individ
 | **Rwanda** | PlanetScope (PS) | **3.4 – 4.2 m** (Commercial Constellation) | Tropical agroforestry, smallholder farmlands, fragmented trees | Manual expert annotations across heterogeneous terrain | Semi-automated national-scale crown segmentation |
 | **France** | SPOT-6 | **1.5 m** (Pansharpened Optical) | Managed temperate forests (Oak, Beech, Pine) | In-situ field inventory measurements (15 m radius circular plots) | IGN LiDAR-HD national Airborne Laser Scanning canopy models |
 
+### Detailed Sample & Annotation Breakdown by Dataset Split
+
+The benchmark partitions each geographic region into strong training, weak training, and independent held-out evaluation subsets. Strong labels are strictly verified ground-truth instances, while weak labels scale into millions of heuristic point predictions.
+
+| Region / Sensor | Split | Image Tiles ($64\times 64$) | Annotation Type | Label Storage Format | Description & Characteristics |
+| :--- | :---: | :---: | :--- | :--- | :--- |
+| **Rwanda / PlanetScope (3.4m)** | **Train-Strong** | **231** | Human photo-interpretation | `points.gpkg` (33.9 MB) | Verified individual tree point annotations across agricultural patches |
+| | **Train-Weak** | **73** | Heuristic segmentation | `points.gpkg` (377.1 MB) | Massive national-scale semi-automated crown predictions across Rwanda |
+| | **Test** | **646** | Human photo-interpretation | `points.gpkg` (25.1 MB) | Independent held-out evaluation tiles across diverse agroforestry parcels |
+| | *Total PS* | *950 tiles* | | | *Complete national agroforestry mosaic* |
+| **China / Gaofen-2 (0.8m)** | **Train-Strong** | **446** | Expert photo-interpretation | `points.gpkg` (5.7 MB) | High-precision tree crown apex coordinates |
+| | **Train-Weak** | **11,000+** | ALS Canopy Height Models | `points.gpkg` (874.9 MB) | Broad regional ALS local maxima coverage (noisy multi-apex labels) |
+| | **Test** | **2,083** | Expert photo-interpretation | `points.gpkg` (7.5 MB) | Rigorous held-out test split covering diverse forest canopy structures |
+| | *Total GF-2* | *13,500+ tiles* | | | *Vast temperate multi-tiered forest coverage* |
+| **France / SPOT-6 (1.5m)** | **Train-Strong** | **492** | In-situ field survey | `points.gpkg` (1.4 MB) | 15 m radius circular NFI plots ($706.9\text{ m}^2$) with stem positions |
+| | **Train-Weak** | **1,000+** | LiDAR-HD ALS models | `geometries.geojson` + `pseudolabels/` | Multi-temporal LiDAR canopy height thresholded forest crops |
+| | **Test** | **493** | In-situ field survey | `points.gpkg` (1.3 MB) | Independent circular NFI plots with exact measured tree coordinates |
+| | *Total SPOT-6* | *985 field plots* | | | *French National Forest Inventory field monitoring sites* |
+
 ---
 
 ## 2. Dataset Visualizations & Annotation Formats
