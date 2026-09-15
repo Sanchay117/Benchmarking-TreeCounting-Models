@@ -147,7 +147,10 @@ def get_dataset(sensor_name, split="train_strong"):
     elif sensor_name == "gf":
         return GaofenWeak(imsize=64, root=os.path.join(root_path, split)) if "weak" in split else GaofenStrong(imsize=64, split=split, root=root_path)
     elif sensor_name == "spot":
-        return SPOTWeak(imsize=64, root=os.path.join(root_path, split)) if "weak" in split else SPOTStrong(imsize=64, split=split, root=root_path)
+        if "weak" in split:
+            print("Notice: SPOT-6 weak raw imagery archive is not bundled in TinyTrees dataset. Using SPOTStrong for training.")
+            return SPOTStrong(imsize=64, split="train_strong", root=root_path)
+        return SPOTStrong(imsize=64, split=split, root=root_path)
     else:
         raise ValueError(f"Unknown sensor {sensor_name}")
 
