@@ -47,7 +47,7 @@ if __name__ == "__main__":
     
     # 2. Setup Prithvi Backbone
     print(f"Initializing backbone: {args.model}...")
-    backbone = PrithviTreematchBackbone(model_name=args.model)
+    backbone = PrithviTreematchBackbone(model_name=args.model, pretrained=False)
     
     print(f"Loading checkpoint: {args.checkpoint}...")
     # Load the fine-tuned checkpoint

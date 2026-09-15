@@ -31,16 +31,17 @@ def download_hf_weights(model_name):
     }
     if model_name not in repo_map:
         return None
-    repo_id, filename = repo_map[model_name]
+    repo_id, base_filename = repo_map[model_name]
+    filename = os.path.join(os.path.dirname(os.path.abspath(__file__)), base_filename)
     if not os.path.exists(filename):
-        print(f"Downloading {filename} from {repo_id}...")
-        path = huggingface_hub.hf_hub_download(repo_id=repo_id, filename=filename, local_dir=".")
+        print(f"Downloading {base_filename} from {repo_id}...")
+        path = huggingface_hub.hf_hub_download(repo_id=repo_id, filename=base_filename, local_dir=os.path.dirname(os.path.abspath(__file__)))
         return path
     return filename
 
 
 class PrithviTreematchBackbone(nn.Module):
-    def __init__(self, model_name="prithvi_vit_300"):
+    def __init__(self, model_name="prithvi_vit_300", pretrained=True):
         super().__init__()
         # Instantiate the TerraTorch Prithvi model with a segmentation decoder
         # model_name can be "prithvi_vit_300" or "prithvi_vit_600"
@@ -54,10 +55,11 @@ class PrithviTreematchBackbone(nn.Module):
             backbone_num_frames=1
         )
         
-        # Load pretrained weights manually
-        ckpt_path = download_hf_weights(model_name)
-        if ckpt_path:
-            state_dict = torch.load(ckpt_path, map_location="cpu")
+        # Load pretrained weights manually if requested
+        if pretrained:
+            ckpt_path = download_hf_weights(model_name)
+            if ckpt_path:
+                state_dict = torch.load(ckpt_path, map_location="cpu")
             if isinstance(state_dict, dict) and "model" in state_dict:
                 state_dict = state_dict["model"]
             

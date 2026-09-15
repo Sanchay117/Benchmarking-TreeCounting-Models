@@ -122,11 +122,13 @@ Below is the evaluation of the `Prithvi-EO-2.0` models fine-tuned on the TINYTRE
 | **Prithvi-300M / PlanetScope** | 100% Strong | 76.48 | 0.47 | 52.6 | 158.86 |
 | **Prithvi-300M / PlanetScope** | 80% Strong + 20% Weak | 80.78 | 0.37 | 56.2 | 169.60 |
 | **Prithvi-300M / SPOT-6** | 100% Strong | 152.77 | 0.33 | 39.1 | 8.34 |
+| **Prithvi-300M / SPOT-6** | 80% Strong + 20% Weak | 152.26 | 0.34 | 38.5 | 8.22 |
 | **Prithvi-600M / Gaofen-2** | 100% Strong | 93.53 | 0.01 | 59.0 | 15.38 |
 | **Prithvi-600M / Gaofen-2** | 80% Strong + 20% Weak | 95.01 | -0.02 | 58.7 | 15.31 |
 | **Prithvi-600M / PlanetScope** | 100% Strong | 75.54 | 0.48 | 51.0 | 153.75 |
 | **Prithvi-600M / PlanetScope** | 80% Strong + 20% Weak | 74.69 | 0.48 | 51.2 | 154.64 |
 | **Prithvi-600M / SPOT-6** | 100% Strong | 150.14 | 0.36 | 38.2 | 8.16 |
+| **Prithvi-600M / SPOT-6** | 80% Strong + 20% Weak | 148.96 | 0.37 | 37.9 | 8.09 |
 
 ### AnySat Foundation Model Fine-Tuning
 

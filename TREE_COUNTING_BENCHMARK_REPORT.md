@@ -177,11 +177,13 @@ The table below compiles the evaluation metrics across all tested models on the 
 | **Prithvi-EO-2.0** | 300M / PlanetScope | 100% Strong | 76.48 | 0.47 | 52.6% | 158.86 |
 | **Prithvi-EO-2.0** | 300M / PlanetScope | 80% Strong + 20% Weak | 80.78 | 0.37 | 56.2% | 169.60 |
 | **Prithvi-EO-2.0** | 300M / SPOT-6 | 100% Strong | 152.77 | 0.33 | 39.1% | 8.34 |
+| **Prithvi-EO-2.0** | 300M / SPOT-6 | 80% Strong + 20% Weak | 152.26 | 0.34 | 38.5% | 8.22 |
 | **Prithvi-EO-2.0** | 600M / Gaofen-2 | 100% Strong | 93.53 | 0.01 | 59.0% | 15.38 |
 | **Prithvi-EO-2.0** | 600M / Gaofen-2 | 80% Strong + 20% Weak | 95.01 | -0.02 | 58.7% | 15.31 |
 | **Prithvi-EO-2.0** | 600M / PlanetScope | 100% Strong | **75.54** | **0.48** | **51.0%** | **153.75** |
 | **Prithvi-EO-2.0** | 600M / PlanetScope | 80% Strong + 20% Weak | **74.69** | **0.48** | **51.2%** | **154.64** |
 | **Prithvi-EO-2.0** | 600M / SPOT-6 | 100% Strong | 150.14 | 0.36 | 38.2% | 8.16 |
+| **Prithvi-EO-2.0** | 600M / SPOT-6 | 80% Strong + 20% Weak | **148.96** | **0.37** | **37.9%** | **8.09** |
 | **AnySat** | Base / Gaofen-2 | 100% Strong | 88.96 | 0.11 | 59.9% | 15.63 |
 | **AnySat** | Base / Gaofen-2 | 80% Strong + 20% Weak | 89.51 | 0.09 | 59.9% | 15.61 |
 | **AnySat** | Base / PlanetScope | 100% Strong | 81.78 | 0.38 | 53.8% | 162.47 |
